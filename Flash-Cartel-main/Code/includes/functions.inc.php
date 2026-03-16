@@ -21,35 +21,6 @@ function createUser($username, $email, $password)
 }
 
 
-// Check if any input fields in login form are empty.
-function emptyInputLogin($username, $password)
-{
-  $result;
-  if (!array_key_exists("username", $_POST) || !array_key_exists("pwd", $_POST)) {
-    $result = true;
-  } else {
-    $result = false;
-  }
-  return $result;
-}
-
-
-// Check if any input fields in registration form are empty. 
-function emptyInputSignup($username, $email, $password, $passwordRepeat)
-{
-  $result;
-  if (
-    !array_key_exists("username", $_POST) || !array_key_exists("email", $_POST)
-    || !array_key_exists("pwd", $_POST) || !array_key_exists("pwdRepeat", $_POST)
-  ) {
-    $result = true;
-  } else {
-    $result = false;
-  }
-  return $result;
-}
-
-
 function getConnection(): PDO
 {
   require 'config.php';
@@ -111,6 +82,7 @@ function loginUser($username, $password)
   // Check if username exists in database.
   $conn = getConnection();
   $userExists = uidExists($conn, $username);
+  $conn = null;
 
   // if username doesn't exist, send user back to login page with error message.
   if ($userExists === false) {
@@ -157,7 +129,15 @@ function pwdNotStrong($password)
 {
   // $result will be true if password DOESN'T match the password policy
   $result;
-  if (!preg_match("/(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*)/", $password)) {
+  if (!preg_match("/(^[.]{0,7})/", $password)) {
+    $result = true;
+  } else if (!preg_match("/[A-Z]/", $password)) {
+    $result = true;
+  } else if (!preg_match("/[a-z]/", $password)) {
+    $result = true;
+  } else if (!preg_match("/[0-9]/", $password)) {
+    $result = true;
+  } else if (!preg_match("/[^\w]/", $password)) {
     $result = true;
   } else {
     $result = false;

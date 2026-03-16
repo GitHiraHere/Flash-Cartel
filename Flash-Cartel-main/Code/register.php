@@ -28,11 +28,12 @@ if (isset($_GET["error"])) {
 ?>
 
 <body>
-  <br>
-  <a href="index.php">Login</a>
-  <h2>Sign up to Flash Cartel:</h2>
-  <br>
+
   <form action="includes/register.inc.php" method="post">
+    <br>
+    <a href="index.php">Login</a>
+    <h2>Sign up to Flash Cartel:</h2>
+    <br>
     <label for="username">Please choose a username:</label><br />
     <input type="text" id="username" name="username" placeholder="Username..." /><br />
     <label for="email">Please enter your email address:</label><br />
@@ -41,7 +42,7 @@ if (isset($_GET["error"])) {
     <input type="password" id="pwd" name="pwd" placeholder="Password..." /><br />
     <label for="pwdRepeat">Please re-enter your password:</label><br />
     <input type="password" id="pwdRepeat" name="pwdRepeat" placeholder="Password..." /><br />
-    <input type="submit" name="submit" value="Submit" />
+    <input type="submit" name="submit" value="Submit" /><br>
   </form>
 
   <?php
