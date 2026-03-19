@@ -10,7 +10,9 @@ if (!array_key_exists("user_id", $_SESSION)) {
 
 <body>
   <h1>Welcome to Flash Cartel, <?php echo $_SESSION["username"]; ?>!</h1>
+  <br>
   <p>This is the home page.</p>
+  <br>
   <a href="includes/logout.inc.php">Logout</a>
   <?php
   include "footer.php";
