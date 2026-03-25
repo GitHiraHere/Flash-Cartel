@@ -10,7 +10,7 @@ if (array_key_exists("user_id", $_SESSION)) {
 ?>
 
 <body>
-  <form action="includes/login.inc.php" method="post">
+  <form class="login" action="includes/login.inc.php" method="post">
 
     <?php
     // Error handling for returned login form.
