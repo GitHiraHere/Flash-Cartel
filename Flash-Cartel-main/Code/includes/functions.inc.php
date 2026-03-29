@@ -21,6 +21,21 @@ function createUser($username, $email, $password)
 }
 
 
+// Find ID number of a deck, given deck name and user ID
+function findDeckId($deck_name, $user_id)
+{
+  $conn = getConnection();
+  $stmt = $conn->prepare("SELECT deck_id FROM decks WHERE deck_name = :deck_name 
+                          AND user_id = :user_id");
+  $stmt->bindValue(':deck_name', $deck_name);
+  $stmt->bindValue(':user_id', $user_id);
+  $stmt->execute();
+  $row = $stmt->fetch();
+  return $row;
+}
+
+
+// Connect to database
 function getConnection(): PDO
 {
   // Read .ini file and create associative array with database connection details.
@@ -42,6 +57,57 @@ function getConnection(): PDO
     echo "Connection failed: " . $exception->getMessage();
   }
   return $conn;
+}
+
+
+// 'Download' a deck of cards
+function getCards($deck_id): array
+{
+  $conn = getConnection();
+  $stmt = $conn->prepare("SELECT * FROM cards WHERE deck_id = :deck_id");
+  $stmt->bindValue(':deck_id', $deck_id);
+  $stmt->execute();
+  $cards = $stmt->fetchAll();
+  return $cards;
+}
+
+
+// Find how many cards in a deck
+function getCardsInDeck($deck_id): int
+{
+  $conn = getConnection();
+  $stmt = $conn->prepare("SELECT COUNT(card_id) AS total FROM cards WHERE deck_id = :deck_id");
+  $stmt->bindValue(':deck_id', $deck_id);
+  $stmt->execute();
+  $numberOfCards = $stmt->fetch()['total'];
+  return $numberOfCards;
+}
+
+
+// Get deck_id number associated with a deck name and user_id
+function getDeckId($user_id, $deck_name)
+{
+  $conn = getConnection();
+  $stmt = $conn->prepare("SELECT deck_id FROM decks WHERE user_id = :user_id
+   AND deck_name = :deck_name");
+  $stmt->bindValue(':user_id', $user_id);
+  $stmt->bindValue(':deck_name', $deck_name);
+  $stmt->execute();
+  $row = $stmt->fetch();
+  return $row["deck_id"];
+}
+
+
+// Get the names of the user's card decks
+function getDecks($user_id): array
+{
+  $conn = getConnection();
+  $stmt = $conn->prepare("SELECT * FROM decks WHERE user_id = :user_id
+   ORDER BY deck_name");
+  $stmt->bindValue(":user_id", $user_id);
+  $stmt->execute();
+  $decks = $stmt->fetchAll();
+  return $decks;
 }
 
 
