@@ -2,11 +2,40 @@
 // This file contains functions that are used in the login and registration processes.
 
 
+// Check entered password valid
+function checkPassword($username, $password)
+{
+  // Check if username exists in database.
+  $conn = getConnection();
+  $userData = uidExists($conn, $username);
+  $conn = null;
+
+  // if username doesn't exist, return false.
+  if ($userData === false) {
+    return false;
+  }
+
+  // if username exists, check if password is correct against hashed password in database.
+  $hashedPassword = $userData["password"];
+  $checkPassword = password_verify($password, $hashedPassword);
+
+  // if password incorrect, return false
+  if ($checkPassword === false) {
+    return false;
+    // if password correct, return array of data for user.
+  } else if ($checkPassword === true) {
+    return $userData;
+  }
+}
+
+
+
 // Create user in database.
 function createUser($username, $email, $password)
 {
   $conn = getConnection();
-  $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (:username, :email, :password);");
+  $stmt = $conn->prepare("INSERT INTO users (username, email, password)
+   VALUES (:username, :email, :password);");
 
   $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
@@ -15,12 +44,86 @@ function createUser($username, $email, $password)
   $stmt->bindValue(':password', $hashedPassword);
   $stmt->execute();
 
-  // $resultSet = $stmt->fetch();
   $conn = null;
-  // return $resultSet;
 }
 
 
+// Edit user's email'
+function editEmail($user_id, $newEmail)
+{
+  $conn = getConnection();
+  $stmt = $conn->prepare("UPDATE users SET email = :email
+    WHERE user_id = :user_id;");
+
+  $stmt->bindValue(':user_id', $user_id);
+  $stmt->bindValue(':email', $newEmail);
+  $stmt->execute();
+
+  $conn = null;
+}
+
+
+// Edit user's password
+function editPassword($user_id, $newPassword)
+{
+  $conn = getConnection();
+  $stmt = $conn->prepare("UPDATE users SET password = :password WHERE user_id = :user_id;");
+
+  $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+  $stmt->bindValue(':user_id', $user_id);
+  $stmt->bindValue(':password', $hashedPassword);
+  $stmt->execute();
+
+  $conn = null;
+}
+
+
+// Edit username
+function editUsername($user_id, $newUsername)
+{
+  $conn = getConnection();
+  $stmt = $conn->prepare("UPDATE users SET username = :username
+    WHERE user_id = :user_id;");
+
+  $stmt->bindValue(':user_id', $user_id);
+  $stmt->bindValue(':username', $newUsername);
+  $stmt->execute();
+
+  $conn = null;
+}
+
+
+// Find ID number of a deck, given deck name and user ID
+function findDeckId($deck_name, $user_id)
+{
+  $conn = getConnection();
+  $stmt = $conn->prepare("SELECT deck_id FROM decks WHERE deck_name = :deck_name 
+                          AND user_id = :user_id");
+  $stmt->bindValue(':deck_name', $deck_name);
+  $stmt->bindValue(':user_id', $user_id);
+  $stmt->execute();
+  $row = $stmt->fetch();
+  $conn = null;
+  return $row;
+}
+
+
+// Find email address of user for Edit Account page
+function findUserEmail($user_id)
+{
+  $conn = getConnection();
+  $stmt = $conn->prepare("SELECT email FROM users WHERE user_id = :user_id");
+  $stmt->bindValue(':user_id', $user_id);
+  $stmt->execute();
+  $row = $stmt->fetch();
+  $conn = null;
+  $email = (string) $row["email"];
+  return $email;
+}
+
+
+// Connect to database
 function getConnection(): PDO
 {
   // Read .ini file and create associative array with database connection details.
@@ -42,6 +145,57 @@ function getConnection(): PDO
     echo "Connection failed: " . $exception->getMessage();
   }
   return $conn;
+}
+
+
+// 'Download' a deck of cards
+function getCards($deck_id): array
+{
+  $conn = getConnection();
+  $stmt = $conn->prepare("SELECT * FROM cards WHERE deck_id = :deck_id");
+  $stmt->bindValue(':deck_id', $deck_id);
+  $stmt->execute();
+  $cards = $stmt->fetchAll();
+  return $cards;
+}
+
+
+// Find how many cards in a deck
+function getCardsInDeck($deck_id): int
+{
+  $conn = getConnection();
+  $stmt = $conn->prepare("SELECT COUNT(card_id) AS total FROM cards WHERE deck_id = :deck_id");
+  $stmt->bindValue(':deck_id', $deck_id);
+  $stmt->execute();
+  $numberOfCards = $stmt->fetch()['total'];
+  return $numberOfCards;
+}
+
+
+// Get deck_id number associated with a deck name and user_id
+function getDeckId($user_id, $deck_name)
+{
+  $conn = getConnection();
+  $stmt = $conn->prepare("SELECT deck_id FROM decks WHERE user_id = :user_id
+   AND deck_name = :deck_name");
+  $stmt->bindValue(':user_id', $user_id);
+  $stmt->bindValue(':deck_name', $deck_name);
+  $stmt->execute();
+  $row = $stmt->fetch();
+  return $row["deck_id"];
+}
+
+
+// Get the names of the user's card decks
+function getDecks($user_id): array
+{
+  $conn = getConnection();
+  $stmt = $conn->prepare("SELECT * FROM decks WHERE user_id = :user_id
+   ORDER BY deck_name");
+  $stmt->bindValue(":user_id", $user_id);
+  $stmt->execute();
+  $decks = $stmt->fetchAll();
+  return $decks;
 }
 
 
@@ -75,7 +229,7 @@ function invalidEmail($email)
 // Check if username contains only letters and numbers.
 function invalidUid($username)
 {
-  $result;
+  $result = false;
   if (!preg_match("/^[a-zA-Z0-9]{3,20}$/", $username)) {
     $result = true;
   } else {
@@ -88,30 +242,19 @@ function invalidUid($username)
 // Login function.
 function loginUser($username, $password)
 {
-  // Check if username exists in database.
-  $conn = getConnection();
-  $userExists = uidExists($conn, $username);
-  $conn = null;
-
-  // if username doesn't exist, send user back to login page with error message.
-  if ($userExists === false) {
-    header("location: ../index.php?error=wronglogin");
-    exit();
-  }
-
-  // if username exists, check if password is correct against hashed password in database.
-  $hashedPassword = $userExists["password"];
-  $checkPwd = password_verify($password, $hashedPassword);
+  // if password incorrect, $userData will contain false
+  // if password correct, $userData will be an array containing data for user
+  $userData = checkPassword($username, $password);
 
   // if password incorrect, send user back to login screen with error message.
   // if password correct, establish session and send user back to login page.
-  if ($checkPwd === false) {
+  if ($userData === false) {
     header("location: ../index.php?error=wronglogin");
     exit();
-  } else if ($checkPwd === true) {
+  } else {
     session_start();
-    $_SESSION["user_id"] = $userExists["user_id"];
-    $_SESSION["username"] = $userExists["username"];
+    $_SESSION["user_id"] = $userData["user_id"];
+    $_SESSION["username"] = $userData["username"];
     header("location: ../index.php");
     exit();
   }
@@ -122,7 +265,7 @@ function loginUser($username, $password)
 function pwdMatch($password, $passwordRepeat)
 {
   // $result will be true if password isn't same as passwordRepeat
-  $result;
+  $result = false;
   if ($password !== $passwordRepeat) {
     $result = true;
   } else {
@@ -137,7 +280,7 @@ function pwdMatch($password, $passwordRepeat)
 function pwdNotStrong($password)
 {
   // $result will be true if password DOESN'T match the password policy
-  $result;
+  $result = false;
   if (!preg_match("/(^[.]{0,7})/", $password)) {
     $result = true;
   } else if (!preg_match("/[.]*[A-Z]+[.]*/", $password)) {
@@ -155,7 +298,9 @@ function pwdNotStrong($password)
 }
 
 
-// Function to check if username already exists in database.
+/* Function to check if username already exists in database.
+   Returns the data for that user if they exist already,
+   Returns false if they don't. */
 function uidExists($conn, $username)
 {
   $conn = getConnection();
@@ -166,10 +311,8 @@ function uidExists($conn, $username)
   $resultSet = $stmt->fetch();
   $conn = null;
   if ($resultSet) {
-    $result = true;
     return $resultSet;
   } else {
-    $result = false;
-    return $result;
+    return false;
   }
 }
