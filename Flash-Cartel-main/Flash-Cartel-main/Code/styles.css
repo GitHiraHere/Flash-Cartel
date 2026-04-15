@@ -1,0 +1,370 @@
+body {
+  background: radial-gradient(circle at top, #0b1a3a, #020814);
+  color: white;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* keeps slide animation clean */
+}
+
+/* ── Slide-in animation (used on login & register cards) ── */
+@keyframes slideFromRight {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Apply to any card you want to slide in */
+.slide-in {
+  animation: slideFromRight 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Fabric image for home page */
+body.fabric {
+  display: inline;
+  margin-left: 100px;
+  margin-right: 100px;
+  margin-top: 50px;
+  border-style: hidden;
+  border-width: 100px;
+}
+
+/* Home page body — no centering, allow navbar layout */
+body.home-page {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Div container tabulated */
+div.tab {
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+/* ── Login / Register card container ── */
+form.login,
+form.register-choice {
+  width: 420px;
+  padding: 40px;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
+
+/* ── Logo / Title ── */
+h1 {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+h1 span {
+  color: #6cff4c;
+}
+
+h1.home-title {
+  font-size: 36px;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+/* ── Tabs / subtitles ── */
+h2 {
+  font-size: 16px;
+  margin-bottom: 25px;
+  color: #9adf72;
+}
+
+/* Large text */
+p.large {
+  font-size: large;
+}
+
+/* Error / alert messages */
+.alert-error {
+  background: rgba(255, 100, 100, 0.12);
+  border: 1px solid rgba(255, 100, 100, 0.35);
+  color: #ff7b7b;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 18px;
+}
+
+/* ── Auth choice buttons (Page 2) ── */
+/* Lighter green "Login" button */
+.btn-choice-login {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 2px solid #5cff3b;
+  background: rgba(108, 255, 76, 0.12);
+  color: #6cff4c;
+  cursor: pointer;
+  margin-bottom: 12px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
+  transition: 0.3s;
+  text-align: center;
+}
+
+.btn-choice-login:hover {
+  background: rgba(108, 255, 76, 0.25);
+  box-shadow: 0 0 15px rgba(108, 255, 76, 0.4);
+}
+
+/* Full green "Sign Up" button */
+.btn-choice-signup {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(90deg, #6cff4c, #3aa52a);
+  color: white;
+  cursor: pointer;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
+  box-shadow: 0 0 15px rgba(108, 255, 76, 0.7);
+  transition: 0.3s;
+  text-align: center;
+}
+
+.btn-choice-signup:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(108, 255, 76, 1);
+}
+
+/* ── Table ── */
+table {
+  border: none;
+  width: 400px;
+}
+
+th {
+  width: 330px;
+  background-color: aliceblue;
+  color: black;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  border: 2px solid #5cff3b;
+  padding: 10px;
+}
+
+td {
+  width: 330px;
+  height: 200px;
+  padding: 14px;
+  border-radius: 10px;
+  border: 2px solid #5cff3b;
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  font-size: 14px;
+  outline: none;
+}
+
+/* ── Form labels ── */
+label {
+  display: block;
+  text-align: left;
+  margin-top: 20px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #cfd6e6;
+}
+
+/* ── Input fields ── */
+input[type=text],
+input[type=password],
+input[type=email] {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: 2px solid #5cff3b;
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  font-size: 14px;
+  outline: none;
+}
+
+textarea {
+  width: 100%;
+  height: 200px;
+  padding: 14px;
+  border-radius: 10px;
+  border: 2px solid #5cff3b;
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  font-size: 14px;
+  outline: none;
+}
+
+input[type=text]:focus,
+input[type=password]:focus,
+input[type=email]:focus {
+  box-shadow: 0 0 10px #5cff3b;
+}
+
+/* ── Drop-down menu ── */
+select {
+  width: 330px;
+  background-color: aliceblue;
+  color: black;
+  margin-bottom: 5px;
+  border-radius: 10px;
+  border: 2px solid #5cff3b;
+  padding: 10px;
+}
+
+/* ── Submit button ── */
+input[type=submit] {
+  width: 100%;
+  margin-top: 30px;
+  padding: 14px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  background: linear-gradient(90deg, #6cff4c, #3aa52a);
+  box-shadow: 0 0 15px rgba(108, 255, 76, 0.7);
+  transition: 0.3s;
+}
+
+input[type=submit]:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(108, 255, 76, 1);
+}
+
+/* ── Links ── */
+a {
+  display: block;
+  margin-top: 15px;
+  font-size: 13px;
+  color: #63fb58;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #2d9e13;
+}
+
+a.home-link {
+  margin-top: 30px;
+  font-size: 22px;
+  color: #9adf72;
+}
+
+/* ── Navbar ── */
+.navbar {
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+.navbar {
+  background: rgba(11, 26, 58, 0.95) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+.navbar .nav-logo {
+  flex-shrink: 0;
+}
+
+.navbar .nav-welcome {
+  flex: 1;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* ── Edit Account dropdown (replaces standalone Logout) ── */
+.nav-account {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.nav-account-btn {
+  background: none;
+  border: 1px solid rgba(108, 255, 76, 0.5);
+  color: #9adf72;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.nav-account-btn:hover {
+  background: rgba(108, 255, 76, 0.1);
+}
+
+.nav-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  background: #0e1f3a;
+  border: 1px solid rgba(108, 255, 76, 0.35);
+  border-radius: 10px;
+  min-width: 160px;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.nav-account:hover .nav-dropdown,
+.nav-account-btn:focus + .nav-dropdown {
+  display: block;
+}
+
+.nav-dropdown a,
+.nav-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  text-align: left;
+  color: white;
+  font-size: 13px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  cursor: pointer;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin: 0;
+  text-decoration: none;
+}
+
+.nav-dropdown a:last-child,
+.nav-dropdown button:last-child {
+  border-bottom: none;
+}
+
+.nav-dropdown a:hover,
+.nav-dropdown button:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.nav-dropdown .logout-btn {
+  color: #ff6b6b;
+}
+
+      
