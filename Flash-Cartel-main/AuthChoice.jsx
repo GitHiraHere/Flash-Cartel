@@ -1,16 +1,4 @@
-/**
- * AuthChoice.jsx
- * 
- * Drop this component into your project.
- * It shows Login / Sign Up buttons first.
- * After clicking, it reveals the appropriate form fields.
- * 
- * Usage in your PHP page (with a React CDN setup):
- *   <div id="auth-root"></div>
- *   <script src="AuthChoice.bundle.js"></script>
- * 
- * Or if using Vite/CRA, just import and render it.
- */
+
 
 import { useState } from "react";
 
