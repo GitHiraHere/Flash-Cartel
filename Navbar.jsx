@@ -1,14 +1,3 @@
-/**
- * Navbar.jsx
- * 
- * Replaces the inline navbar HTML in home.php.
- * Shows "Edit Account" dropdown with Logout inside it.
- * 
- * Props:
- *   username  — logged-in user's display name
- *   editAccountUrl  — link to edit_account.php (or sub-pages)
- *   logoutUrl       — link to logout.php
- */
 
 import { useState, useRef, useEffect } from "react";
 
